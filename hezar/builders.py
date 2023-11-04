@@ -27,8 +27,8 @@ from .registry import (
     models_registry,
     preprocessors_registry,
 )
-from .utils import snake_case
-
+from .utils.common_utils import snake_case
+from .utils.registry_utils import lazy_import_module_cls
 
 __all__ = [
     "build_model",
@@ -56,7 +56,8 @@ def build_model(name: str, config: Optional[ModelConfig] = None, **kwargs):
     if name not in models_registry:
         raise ValueError(f"Unknown model name: `{name}`!\n" f"Available model names: {list(models_registry.keys())}")
     config = config or models_registry[name].config_class()
-    model = models_registry[name].module_class(config, **kwargs)
+    klass = lazy_import_module_cls(models_registry, name)
+    model = klass(config, **kwargs)
     return model
 
 
@@ -79,7 +80,8 @@ def build_preprocessor(name: str, config: Optional[PreprocessorConfig] = None, *
             f"Available preprocessor names: {list(preprocessors_registry.keys())}"
         )
     config = config or preprocessors_registry[name].config_class()
-    preprocessor = preprocessors_registry[name].module_class(config, **kwargs)
+    klass = lazy_import_module_cls(preprocessors_registry, name)
+    preprocessor = klass(config, **kwargs)
     return preprocessor
 
 

@@ -8,7 +8,7 @@ from torch import nn
 
 from ....constants import Backends
 from ....registry import register_model
-from ....utils import is_backend_available
+from ....utils.integration_utils import is_backend_available
 from ...model import Model
 from .distilbert_sequence_labeling_config import DistilBertSequenceLabelingConfig
 

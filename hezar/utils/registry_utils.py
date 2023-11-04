@@ -1,6 +1,8 @@
-from ..constants import RegistryType
-from .common_utils import snake_case
+import importlib
+from typing import Dict
 
+from .common_utils import snake_case
+from ..constants import RegistryType
 
 __all__ = [
     "list_available_models",
@@ -12,6 +14,7 @@ __all__ = [
     "get_module_class",
     "get_module_config_class",
     "get_registry_key_by_module_class",
+    "lazy_import_module_cls"
 ]
 
 
@@ -114,6 +117,24 @@ def get_module_config_class(name: str, registry_type: RegistryType):
     return config_cls
 
 
+def lazy_import_module_cls(registry_dict: Dict, name: str):
+    """
+    This function is used to Lazy load classes in build modules
+    :param registry_dict:
+    :param name:
+    :return:
+    """
+    module_class = registry_dict[name].module_class
+    if isinstance(module_class, type):
+        klass = module_class
+    else:
+        # Import the module
+        module = importlib.import_module("hezar")
+        # Get the class
+        klass = getattr(module, module_class)
+    return klass
+
+
 def get_module_class(name: str, registry_type: RegistryType):
     """
     Get module class based on registry name
@@ -128,7 +149,8 @@ def get_module_class(name: str, registry_type: RegistryType):
     registry = _get_registry_from_type(registry_type)
 
     name = snake_case(name)
-    module_cls = registry[name].module_class
+    module_cls = lazy_import_module_cls(registry, name)
+
     return module_cls
 
 

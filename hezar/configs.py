@@ -23,8 +23,8 @@ from huggingface_hub import create_repo, hf_hub_download, upload_file
 from omegaconf import DictConfig, OmegaConf
 
 from .constants import DEFAULT_MODEL_CONFIG_FILE, HEZAR_CACHE_DIR, ConfigType, TaskType
-from .utils import Logger, get_module_config_class
-
+from .utils.logging import Logger
+from .utils.registry_utils import get_module_config_class
 
 __all__ = [
     "Config",
@@ -135,12 +135,12 @@ class Config:
 
     @classmethod
     def load(
-        cls,
-        hub_or_local_path: Union[str, os.PathLike],
-        filename: Optional[str] = None,
-        subfolder: Optional[str] = None,
-        repo_type=None,
-        **kwargs,
+            cls,
+            hub_or_local_path: Union[str, os.PathLike],
+            filename: Optional[str] = None,
+            subfolder: Optional[str] = None,
+            repo_type=None,
+            **kwargs,
     ) -> "Config":
         """
         Load config from Hub or locally if it already exists on disk (handled by HfApi)
@@ -214,11 +214,11 @@ class Config:
         return config
 
     def save(
-        self,
-        save_dir: Union[str, os.PathLike],
-        filename: str,
-        subfolder: Optional[str] = None,
-        skip_none_fields: Optional[bool] = True,
+            self,
+            save_dir: Union[str, os.PathLike],
+            filename: str,
+            subfolder: Optional[str] = None,
+            skip_none_fields: Optional[bool] = True,
     ):
         """
         Save the `*config.yaml` file to a local path
@@ -244,14 +244,14 @@ class Config:
         return save_path
 
     def push_to_hub(
-        self,
-        repo_id: str,
-        filename: str,
-        subfolder: Optional[str] = None,
-        repo_type: Optional[str] = "model",
-        skip_none_fields: Optional[bool] = True,
-        private: Optional[bool] = False,
-        commit_message: Optional[str] = None,
+            self,
+            repo_id: str,
+            filename: str,
+            subfolder: Optional[str] = None,
+            repo_type: Optional[str] = "model",
+            skip_none_fields: Optional[bool] = True,
+            private: Optional[bool] = False,
+            commit_message: Optional[str] = None,
     ):
         """
         Push the config file to the hub

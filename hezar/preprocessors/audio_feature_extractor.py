@@ -6,8 +6,8 @@ import numpy as np
 from ..builders import build_preprocessor
 from ..configs import PreprocessorConfig
 from ..constants import DEFAULT_FEATURE_EXTRACTOR_CONFIG_FILE
-from ..utils import convert_batch_dict_dtype
 from .preprocessor import Preprocessor
+from ..utils.data_utils import convert_batch_dict_dtype
 
 
 @dataclass

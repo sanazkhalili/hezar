@@ -25,7 +25,7 @@ Note: In case of adding a new registry container, make sure to add to `__all__` 
 """
 
 from dataclasses import dataclass
-from typing import Dict, Optional, Type
+from typing import Dict, Optional, Type, Union
 
 from .configs import (
     DatasetConfig,
@@ -34,8 +34,7 @@ from .configs import (
     ModelConfig,
     PreprocessorConfig,
 )
-from .utils import Logger
-
+from .utils.logging import Logger
 
 __all__ = [
     "register_model",
@@ -56,7 +55,7 @@ logger = Logger(__name__)
 
 @dataclass
 class Registry:
-    module_class: type
+    module_class: Union[str, type]
     config_class: type = None
     description: Optional[str] = None
 
@@ -68,7 +67,7 @@ embeddings_registry: Dict[str, Registry] = {}
 metrics_registry: Dict[str, Registry] = {}
 
 
-def register_model(model_name: str, config_class: Type[ModelConfig], description: str = None):
+def register_model(model_name: str, config_class: Type[ModelConfig], description: str = None, dummy: bool = False):
     """
     A class decorator that adds the model class and the config class to the `models_registry`
 
@@ -77,6 +76,7 @@ def register_model(model_name: str, config_class: Type[ModelConfig], description
         config_class: Model's config class e.g, `BertSequenceLabelingConfig`. This parameter must be the config class
             itself not a config instance!
         description: Optional model description
+        dummy: Model's registry's source. From a dummy class or main class, default is False(Main Class)
     """
 
     def register(cls):
@@ -90,7 +90,8 @@ def register_model(model_name: str, config_class: Type[ModelConfig], description
                 f"{config_class.__name__}.name: {config_class.name}"
             )
 
-        models_registry[model_name] = Registry(module_class=cls, config_class=config_class, description=description)
+        models_registry[model_name] = Registry(module_class=cls.__name__ if dummy else cls, config_class=config_class,
+                                               description=description)
 
         return cls
 
@@ -130,7 +131,8 @@ def register_dataset(dataset_name: str, config_class: Type[DatasetConfig], descr
     return register
 
 
-def register_preprocessor(preprocessor_name: str, config_class: Type[PreprocessorConfig], description: str = None):
+def register_preprocessor(preprocessor_name: str, config_class: Type[PreprocessorConfig], description: str = None,
+                          dummy: bool = False):
     """
     A class decorator that adds the preprocessor class and the config class to the `preprocessors_registry`
 
@@ -139,6 +141,8 @@ def register_preprocessor(preprocessor_name: str, config_class: Type[Preprocesso
         config_class: Preprocessor's config class e.g, BPEConfig. This parameter must be the config
             class itself not a config instance!
         description: Optional preprocessor description
+        dummy: Preprocessor's registry's source. From a dummy class or main class, default is False(Main Class)
+
     """
 
     def register(cls):
@@ -153,7 +157,7 @@ def register_preprocessor(preprocessor_name: str, config_class: Type[Preprocesso
             )
 
         preprocessors_registry[preprocessor_name] = Registry(
-            module_class=cls,
+            module_class=cls.__name__ if dummy else cls,
             config_class=config_class,
             description=description,
         )

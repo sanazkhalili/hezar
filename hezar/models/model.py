@@ -27,10 +27,11 @@ from ..constants import (
     LossType,
     RegistryType,
 )
-from ..preprocessors import Preprocessor, PreprocessorsContainer
-from ..utils import Logger, get_module_class, verify_dependencies
+from ..preprocessors.preprocessor import Preprocessor, PreprocessorsContainer
+from ..utils.integration_utils import verify_dependencies
+from ..utils.logging import Logger
 from .model_outputs import ModelOutput
-
+from ..utils.registry_utils import get_module_class
 
 logger = Logger(__name__)
 
@@ -87,14 +88,14 @@ class Model(nn.Module):
 
     @classmethod
     def load(
-        cls,
-        hub_or_local_path: Union[str, os.PathLike],
-        load_locally: Optional[bool] = False,
-        load_preprocessor: Optional[bool] = True,
-        model_filename: Optional[str] = None,
-        config_filename: Optional[str] = None,
-        save_path: Optional[Union[str, os.PathLike]] = None,
-        **kwargs,
+            cls,
+            hub_or_local_path: Union[str, os.PathLike],
+            load_locally: Optional[bool] = False,
+            load_preprocessor: Optional[bool] = True,
+            model_filename: Optional[str] = None,
+            config_filename: Optional[str] = None,
+            save_path: Optional[Union[str, os.PathLike]] = None,
+            **kwargs,
     ) -> "Model":
         """
         Load the model from local path or hub.
@@ -134,7 +135,7 @@ class Model(nn.Module):
                 )
             model = model_cls(config, **kwargs)
 
-        model_filename = model_filename or model_cls.model_filename or cls.model_filename
+        model_filename = model_filename or model.model_filename
         # does the path exist locally?
         is_local = load_locally or os.path.isdir(hub_or_local_path)
         if not is_local:
@@ -199,11 +200,11 @@ class Model(nn.Module):
                 )
 
     def save(
-        self,
-        path: Union[str, os.PathLike],
-        filename: Optional[str] = None,
-        save_preprocessor: Optional[bool] = True,
-        config_filename: Optional[str] = None,
+            self,
+            path: Union[str, os.PathLike],
+            filename: Optional[str] = None,
+            save_preprocessor: Optional[bool] = True,
+            config_filename: Optional[str] = None,
     ):
         """
         Save model weights and config to a local path
@@ -232,13 +233,13 @@ class Model(nn.Module):
                 self.preprocessor.save(path)
 
     def push_to_hub(
-        self,
-        repo_id: str,
-        filename: Optional[str] = None,
-        config_filename: Optional[str] = None,
-        push_preprocessor: Optional[bool] = True,
-        commit_message: Optional[str] = None,
-        private: Optional[bool] = False,
+            self,
+            repo_id: str,
+            filename: Optional[str] = None,
+            config_filename: Optional[str] = None,
+            push_preprocessor: Optional[bool] = True,
+            commit_message: Optional[str] = None,
+            private: Optional[bool] = False,
     ):
         """
         Push the model and required files to the hub
@@ -356,11 +357,11 @@ class Model(nn.Module):
 
     @torch.inference_mode()
     def predict(
-        self,
-        inputs: Union[Any, List[Any]],
-        device: Union[str, torch.device] = None,
-        unpack_forward_inputs: bool = True,
-        **kwargs,
+            self,
+            inputs: Union[Any, List[Any]],
+            device: Union[str, torch.device] = None,
+            unpack_forward_inputs: bool = True,
+            **kwargs,
     ) -> Union[Dict, List[Dict], torch.Tensor, Iterable, ModelOutput]:
         """
         Perform an end-to-end prediction on raw inputs.

@@ -10,7 +10,7 @@ from ..constants import (
     Backends,
 )
 from ..registry import register_preprocessor
-from ..utils import Logger, is_backend_available
+from ..utils.logging import Logger, is_backend_available
 from .preprocessor import Preprocessor
 
 
