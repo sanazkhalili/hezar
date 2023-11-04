@@ -5,7 +5,6 @@ Home to all constant variables in Hezar
 import os
 from enum import Enum
 
-
 HEZAR_HUB_ID = "hezarai"
 HEZAR_CACHE_DIR = os.getenv("HEZAR_CACHE_DIR", f'{os.path.expanduser("~")}/.cache/hezar')
 
@@ -26,6 +25,8 @@ DEFAULT_EMBEDDING_CONFIG_FILE = "embedding_config.yaml"
 DEFAULT_EMBEDDING_SUBFOLDER = "embedding"
 
 TQDM_BAR_FORMAT = "{desc:<16}{percentage:3.0f}%|{bar:70}{r_bar}"
+
+DUMMY_PATH = "dummy_objects.dummy_objects"
 
 
 class Backends(str, Enum):
