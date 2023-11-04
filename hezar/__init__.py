@@ -5,30 +5,31 @@ from .configs import *
 from typing import TYPE_CHECKING
 
 from .dummy_objects.framework import _LazyModule  # noqa
-from .dummy_objects.framework import is_torch_available, is_transformers_available, is_tokenizers_available
 from .dummy_objects import *
+from .utils.integration_utils import is_backend_available
+from .constants import Backends, DUMMY_PATH
 
 __version__ = "0.31.3"
 
-DUMMY_PATH = "dummy_objects.dummy_objects"
+
 # no third-party python libraries are required for the following classes
 _import_structure = {
     "utils.logging": ["Logger"],
     DUMMY_PATH: []
 }
 
-if is_torch_available() and is_tokenizers_available():
+if is_backend_available(Backends.PYTORCH) and is_backend_available(Backends.TOKENIZERS):
     _import_structure['preprocessors.tokenizers.tokenizer'] = ["Tokenizer", 'TokenizerConfig']
     _import_structure['preprocessors.tokenizers.wordpiece'] = ['WordPieceConfig', 'WordPieceTokenizer']
 else:
     _import_structure[DUMMY_PATH].extend(["Tokenizer", 'TokenizerConfig', 'WordPieceConfig', 'WordPieceTokenizer'])
 
-if is_torch_available():
+if is_backend_available(Backends.PYTORCH):
     _import_structure["models.model"] = ["Model"]
 else:
     _import_structure[DUMMY_PATH].extend(["Model"])
 
-if is_torch_available() and is_transformers_available():
+if is_backend_available(Backends.PYTORCH) and is_backend_available(Backends.TRANSFORMERS):
     _import_structure["models.text_classification.distilbert.distilbert_text_classification"] = [
         "DistilBertTextClassification"]
 else:
@@ -50,11 +51,3 @@ else:
         module_spec=__spec__,
         extra_objects={"__version__": __version__},
     )
-
-# from .data import *
-# from .embeddings import *
-# from .metrics import *
-# from .models import *
-# from .preprocessors import *
-# from .trainer import *
-# from .utils import *
