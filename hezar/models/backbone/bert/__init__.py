@@ -1,1 +1,1 @@
-from .bert import BERT, BERTConfig
+# from .bert import BERT, BERTConfig
