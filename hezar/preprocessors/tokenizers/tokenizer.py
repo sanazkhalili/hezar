@@ -1,24 +1,24 @@
 import os
 import tempfile
 from collections import defaultdict
-from dataclasses import dataclass
 from typing import Dict, List, Literal, Mapping, Optional, Tuple, Union
 
 import numpy as np
 import torch
 from huggingface_hub import create_repo, hf_hub_download, upload_file
 
+from .tokenizer_config import TokenizerConfig
+from ..preprocessor import Preprocessor
 from ...builders import build_preprocessor
-from ...configs import PreprocessorConfig
 from ...constants import (
     DEFAULT_TOKENIZER_CONFIG_FILE,
     DEFAULT_TOKENIZER_FILE,
     HEZAR_CACHE_DIR,
     Backends,
 )
-from ...utils import Logger, convert_batch_dict_dtype, is_backend_available
-from ..preprocessor import Preprocessor
-
+from ...utils.data_utils import convert_batch_dict_dtype
+from ...utils.integration_utils import is_backend_available
+from ...utils.logging import Logger
 
 if is_backend_available(Backends.TOKENIZERS):
     from tokenizers import Tokenizer as HFTokenizer
@@ -26,27 +26,6 @@ if is_backend_available(Backends.TOKENIZERS):
     from tokenizers.models import Model
 
 logger = Logger(__name__)
-
-
-@dataclass
-class TokenizerConfig(PreprocessorConfig):
-    name = "tokenizer"
-    max_length: int = None
-    truncation_strategy: str = None
-    truncation_direction: str = None
-    stride: int = None
-    padding_strategy: str = None
-    padding_direction: str = None
-    pad_to_multiple_of: int = None
-    pad_token_type_id: int = 0
-    bos_token: str = None
-    eos_token: str = None
-    unk_token: str = None
-    sep_token: str = None
-    pad_token: str = None
-    cls_token: str = None
-    mask_token: str = None
-    additional_special_tokens: List[str] = None
 
 
 class Tokenizer(Preprocessor):
@@ -128,12 +107,12 @@ class Tokenizer(Preprocessor):
         return self._tokenizer.decode_batch(ids, skip_special_tokens=skip_special_tokens)
 
     def pad_encoded_batch(
-        self,
-        inputs,
-        padding: Literal["longest", "max_length"] = None,
-        max_length: Optional[int] = None,
-        return_tensors: Optional[str] = None,
-        skip_keys: list = None,
+            self,
+            inputs,
+            padding: Literal["longest", "max_length"] = None,
+            max_length: Optional[int] = None,
+            return_tensors: Optional[str] = None,
+            skip_keys: list = None,
     ):
         """
         Given a batch of encoded inputs, add padding to all of them so that the inputs are of the same length.
@@ -212,27 +191,27 @@ class Tokenizer(Preprocessor):
         return inputs
 
     def __call__(
-        self,
-        inputs: Union[List[str], List[Tuple[str, str]]],
-        device: Union[str, torch.device] = None,
-        add_special_tokens: bool = True,
-        padding_strategy=None,
-        truncation_strategy=None,
-        max_length: int = None,
-        return_tensors: str = "list",
-        stride: int = 0,
-        is_split_into_words: bool = False,
-        pad_to_multiple_of: int = None,
-        return_tokens: bool = None,
-        return_token_type_ids: bool = None,
-        return_attention_mask: bool = True,
-        return_overflowing_tokens: bool = False,
-        return_special_tokens_mask: bool = True,
-        return_offsets_mapping: bool = False,
-        return_length: bool = False,
-        return_word_ids: bool = False,
-        verbose: bool = True,
-        **kwargs,
+            self,
+            inputs: Union[List[str], List[Tuple[str, str]]],
+            device: Union[str, torch.device] = None,
+            add_special_tokens: bool = True,
+            padding_strategy=None,
+            truncation_strategy=None,
+            max_length: int = None,
+            return_tensors: str = "list",
+            stride: int = 0,
+            is_split_into_words: bool = False,
+            pad_to_multiple_of: int = None,
+            return_tokens: bool = None,
+            return_token_type_ids: bool = None,
+            return_attention_mask: bool = True,
+            return_overflowing_tokens: bool = False,
+            return_special_tokens_mask: bool = True,
+            return_offsets_mapping: bool = False,
+            return_length: bool = False,
+            return_word_ids: bool = False,
+            verbose: bool = True,
+            **kwargs,
     ):
         """
         Tokenize a batch of string inputs and return the relevant properties e.g, token ids, attention mask, etc.
@@ -326,14 +305,14 @@ class Tokenizer(Preprocessor):
         return outputs
 
     def set_truncation_and_padding(
-        self,
-        padding_strategy=None,
-        truncation_strategy=None,
-        padding_side=None,
-        truncation_side=None,
-        max_length: int = None,
-        stride: int = None,
-        pad_to_multiple_of: int = None,
+            self,
+            padding_strategy=None,
+            truncation_strategy=None,
+            padding_side=None,
+            truncation_side=None,
+            max_length: int = None,
+            stride: int = None,
+            pad_to_multiple_of: int = None,
     ):
         # Set truncation and padding on the backend tokenizer
         if truncation_strategy == "no_truncation":
@@ -371,16 +350,16 @@ class Tokenizer(Preprocessor):
                     self.enable_padding(**target)
 
     def _convert_encodings(
-        self,
-        encoding,
-        return_tokens: bool = None,
-        return_token_type_ids: bool = None,
-        return_attention_mask: bool = None,
-        return_overflowing_tokens: bool = False,
-        return_special_tokens_mask: bool = False,
-        return_offsets_mapping: bool = False,
-        return_length: bool = False,
-        return_word_ids: bool = False,
+            self,
+            encoding,
+            return_tokens: bool = None,
+            return_token_type_ids: bool = None,
+            return_attention_mask: bool = None,
+            return_overflowing_tokens: bool = False,
+            return_special_tokens_mask: bool = False,
+            return_offsets_mapping: bool = False,
+            return_length: bool = False,
+            return_word_ids: bool = False,
     ):
         if return_overflowing_tokens and encoding.overflowing is not None:
             encodings = [encoding] + encoding.overflowing
@@ -437,13 +416,13 @@ class Tokenizer(Preprocessor):
         return self._tokenizer.get_vocab_size(with_added_tokens=with_added_tokens)
 
     def enable_padding(
-        self,
-        direction: str = "right",
-        pad_to_multiple_of: int = None,
-        pad_id: int = 0,
-        pad_type_id: int = 0,
-        pad_token: str = "[PAD]",
-        length: int = None,
+            self,
+            direction: str = "right",
+            pad_to_multiple_of: int = None,
+            pad_id: int = 0,
+            pad_type_id: int = 0,
+            pad_token: str = "[PAD]",
+            length: int = None,
     ):
         return self._tokenizer.enable_padding(
             direction=direction,
@@ -494,10 +473,10 @@ class Tokenizer(Preprocessor):
         return self._tokenizer.get_vocab_size(with_added_tokens=True)
 
     def get_tokens_from_offsets(
-        self,
-        text: Union[str, List[str]],
-        ids: List[int],
-        offsets_mapping: List[Tuple[int, int]],
+            self,
+            text: Union[str, List[str]],
+            ids: List[int],
+            offsets_mapping: List[Tuple[int, int]],
     ):
         """
         Extract human-readable tokens using the original text and offsets mapping
@@ -524,12 +503,12 @@ class Tokenizer(Preprocessor):
 
     @classmethod
     def load(
-        cls,
-        hub_or_local_path,
-        subfolder=None,
-        config_filename=None,
-        tokenizer_filename=None,
-        **kwargs,
+            cls,
+            hub_or_local_path,
+            subfolder=None,
+            config_filename=None,
+            tokenizer_filename=None,
+            **kwargs,
     ) -> "Tokenizer":
         tokenizer_filename = tokenizer_filename or cls.tokenizer_filename
         config_filename = config_filename or cls.tokenizer_config_filename
@@ -564,13 +543,13 @@ class Tokenizer(Preprocessor):
         self._tokenizer.save(save_path, pretty=pretty)
 
     def push_to_hub(
-        self,
-        repo_id,
-        commit_message=None,
-        subfolder=None,
-        tokenizer_filename=None,
-        config_filename=None,
-        private=False,
+            self,
+            repo_id,
+            commit_message=None,
+            subfolder=None,
+            tokenizer_filename=None,
+            config_filename=None,
+            private=False,
     ):
         """
         Push tokenizer and config to the Hub
