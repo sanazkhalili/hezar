@@ -18,18 +18,18 @@ _import_structure = {
     DUMMY_PATH: []
 }
 
-if is_backend_available(Backends.PYTORCH) and is_backend_available(Backends.TOKENIZERS):
+if is_backend_available(Backends.TORCH) and is_backend_available(Backends.TOKENIZERS):
     _import_structure['preprocessors.tokenizers.tokenizer'] = ["Tokenizer", 'TokenizerConfig']
     _import_structure['preprocessors.tokenizers.wordpiece'] = ['WordPieceConfig', 'WordPieceTokenizer']
 else:
     _import_structure[DUMMY_PATH].extend(["Tokenizer", 'TokenizerConfig', 'WordPieceConfig', 'WordPieceTokenizer'])
 
-if is_backend_available(Backends.PYTORCH):
+if is_backend_available(Backends.TORCH):
     _import_structure["models.model"] = ["Model"]
 else:
     _import_structure[DUMMY_PATH].extend(["Model"])
 
-if is_backend_available(Backends.PYTORCH) and is_backend_available(Backends.TRANSFORMERS):
+if is_backend_available(Backends.TORCH) and is_backend_available(Backends.TRANSFORMERS):
     _import_structure["models.text_classification.distilbert.distilbert_text_classification"] = [
         "DistilBertTextClassification"]
 else:

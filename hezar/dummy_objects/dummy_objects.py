@@ -8,7 +8,7 @@ from ..constants import Backends
 
 
 class Tokenizer(metaclass=DummyObject):
-    _backend = [Backends.PYTORCH, Backends.TOKENIZERS]
+    _backend = [Backends.TORCH, Backends.TOKENIZERS]
     _module = "hezar.preprocessors.tokenizers.wordpiece"
 
     def __init__(self, *args, **kwargs):
@@ -17,7 +17,7 @@ class Tokenizer(metaclass=DummyObject):
 
 @register_preprocessor("wordpiece_tokenizer", config_class=WordPieceConfig, dummy=True)
 class WordPieceTokenizer(metaclass=DummyObject):
-    _backend = [Backends.TOKENIZERS, Backends.PYTORCH]
+    _backend = [Backends.TOKENIZERS, Backends.TORCH]
     _module = "hezar.preprocessors.tokenizers.wordpiece"
 
     def __init__(self, *args, **kwargs):
@@ -25,7 +25,7 @@ class WordPieceTokenizer(metaclass=DummyObject):
 
 
 class Model(metaclass=DummyObject):
-    _backend = [Backends.PYTORCH]
+    _backend = [Backends.TORCH]
     _module = "hezar.models.model"
 
     def __init__(self, *args, **kwargs):
@@ -35,7 +35,7 @@ class Model(metaclass=DummyObject):
 @register_model(model_name="distilbert_text_classification", config_class=DistilBertTextClassificationConfig,
                 dummy=True)
 class DistilBertTextClassification(metaclass=DummyObject):
-    _backend = [Backends.PYTORCH, Backends.TRANSFORMERS]
+    _backend = [Backends.TORCH, Backends.TRANSFORMERS]
     _module = "hezar.models.text_classification.distilbert.distilbert_text_classification"
 
     def __init__(self, *args, **kwargs):
