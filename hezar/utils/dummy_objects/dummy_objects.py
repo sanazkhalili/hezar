@@ -1,7 +1,7 @@
-from ..registry import register_preprocessor
+from hezar.registry import register_preprocessor
 from .framework import DummyObject, requires_backends
-from ..registry import register_model
-from ..constants import Backends
+from hezar.registry import register_model
+from hezar.constants import Backends
 
 
 class Tokenizer(metaclass=DummyObject):

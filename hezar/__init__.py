@@ -4,8 +4,8 @@ from .configs import *
 
 from typing import TYPE_CHECKING
 
-from .dummy_objects.framework import _LazyModule  # noqa
-from .dummy_objects import *
+from .utils.dummy_objects.framework import _LazyModule  # noqa
+from .utils.dummy_objects import *
 from .utils.integration_utils import are_backends_available
 from .constants import Backends, DUMMY_PATH
 
