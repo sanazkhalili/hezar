@@ -26,7 +26,7 @@ DEFAULT_EMBEDDING_SUBFOLDER = "embedding"
 
 TQDM_BAR_FORMAT = "{desc:<16}{percentage:3.0f}%|{bar:70}{r_bar}"
 
-DUMMY_PATH = "dummy_objects.dummy_objects"
+DUMMY_PATH = "utils.dummy_objects.dummy_objects"
 
 
 class Backends(str, Enum):
