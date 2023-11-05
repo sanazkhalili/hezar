@@ -36,6 +36,7 @@ from .configs import (
 )
 from .utils.logging import Logger
 
+
 __all__ = [
     "register_model",
     "register_preprocessor",
@@ -67,7 +68,12 @@ embeddings_registry: Dict[str, Registry] = {}
 metrics_registry: Dict[str, Registry] = {}
 
 
-def register_model(model_name: str, config_class: Type[ModelConfig], description: str = None, dummy: bool = False):
+def register_model(
+    model_name: str,
+    config_class: Type[ModelConfig] = None,
+    description: str = None,
+    dummy: bool = False,
+):
     """
     A class decorator that adds the model class and the config class to the `models_registry`
 
@@ -90,15 +96,25 @@ def register_model(model_name: str, config_class: Type[ModelConfig], description
                 f"{config_class.__name__}.name: {config_class.name}"
             )
 
-        models_registry[model_name] = Registry(module_class=cls.__name__ if dummy else cls, config_class=config_class,
-                                               description=description)
+        module_class = cls.__name__ if dummy else cls
+
+        models_registry[model_name] = Registry(
+            module_class=module_class,
+            config_class=config_class,
+            description=description,
+        )
 
         return cls
 
     return register
 
 
-def register_dataset(dataset_name: str, config_class: Type[DatasetConfig], description: str = None):
+def register_dataset(
+    dataset_name: str,
+    config_class: Type[DatasetConfig] = None,
+    description: str = None,
+    dummy: bool = False,
+):
     """
     A class decorator that adds the dataset class and the config class to the `datasets_registry`
 
@@ -107,6 +123,7 @@ def register_dataset(dataset_name: str, config_class: Type[DatasetConfig], descr
         config_class: Dataset's config class e.g, `TextClassificationDatasetConfig`. This parameter must be the config
             class itself not a config instance!
         description: Optional dataset description
+        dummy: Dataset's registry's source. From a dummy class or main class, default is False(Main Class)
     """
 
     def register(cls):
@@ -120,8 +137,10 @@ def register_dataset(dataset_name: str, config_class: Type[DatasetConfig], descr
                 f"{config_class.__name__}.name: {config_class.name}"
             )
 
+        module_class = cls.__name__ if dummy else cls
+
         datasets_registry[dataset_name] = Registry(
-            module_class=cls,
+            module_class=module_class,
             config_class=config_class,
             description=description,
         )
@@ -131,8 +150,12 @@ def register_dataset(dataset_name: str, config_class: Type[DatasetConfig], descr
     return register
 
 
-def register_preprocessor(preprocessor_name: str, config_class: Type[PreprocessorConfig], description: str = None,
-                          dummy: bool = False):
+def register_preprocessor(
+    preprocessor_name: str,
+    config_class: Type[PreprocessorConfig] = None,
+    description: str = None,
+    dummy: bool = False,
+):
     """
     A class decorator that adds the preprocessor class and the config class to the `preprocessors_registry`
 
@@ -156,8 +179,10 @@ def register_preprocessor(preprocessor_name: str, config_class: Type[Preprocesso
                 f"{config_class.__name__}.name: {config_class.name}"
             )
 
+        module_class = cls.__name__ if dummy else cls
+
         preprocessors_registry[preprocessor_name] = Registry(
-            module_class=cls.__name__ if dummy else cls,
+            module_class=module_class,
             config_class=config_class,
             description=description,
         )
@@ -167,7 +192,12 @@ def register_preprocessor(preprocessor_name: str, config_class: Type[Preprocesso
     return register
 
 
-def register_embedding(embedding_name: str, config_class: Type[EmbeddingConfig], description: str = None):
+def register_embedding(
+    embedding_name: str,
+    config_class: Type[EmbeddingConfig],
+    description: str = None,
+    dummy: bool = False,
+):
     """
     A class decorator that adds the embedding class and the config class to the `embeddings_registry`
 
@@ -176,6 +206,7 @@ def register_embedding(embedding_name: str, config_class: Type[EmbeddingConfig],
         config_class: Embedding's config class e.g, Word2VecCBOWConfig. This parameter must be the config
             class itself not a config instance!
         description: Optional embedding description
+        dummy: Embedding's registry's source. From a dummy class or main class, default is False(Main Class)
     """
 
     def register(cls):
@@ -189,8 +220,10 @@ def register_embedding(embedding_name: str, config_class: Type[EmbeddingConfig],
                 f"{config_class.__name__}.name: {config_class.name}"
             )
 
+        module_class = cls.__name__ if dummy else cls
+
         embeddings_registry[embedding_name] = Registry(
-            module_class=cls,
+            module_class=module_class,
             config_class=config_class,
             description=description,
         )
@@ -200,7 +233,12 @@ def register_embedding(embedding_name: str, config_class: Type[EmbeddingConfig],
     return register
 
 
-def register_metric(metric_name: str, config_class: Type[MetricConfig], description: str = None):
+def register_metric(
+    metric_name: str,
+    config_class: Type[MetricConfig],
+    description: str = None,
+    dummy: bool = False,
+):
     """
     A class decorator that adds the metric class and the config class to the `metrics_registry`
 
@@ -208,6 +246,7 @@ def register_metric(metric_name: str, config_class: Type[MetricConfig], descript
         metric_name: Metric registry name e.g, `f1`
         config_class: Metric config class
         description: Optional metric description
+        dummy: Metric's registry's source. From a dummy class or main class, default is False(Main Class)
     """
 
     def register(cls):
@@ -220,8 +259,10 @@ def register_metric(metric_name: str, config_class: Type[MetricConfig], descript
                 f"{config_class.__name__}.name: {config_class.name}"
             )
 
+        module_class = cls.__name__ if dummy else cls
+
         metrics_registry[metric_name] = Registry(
-            module_class=cls,
+            module_class=module_class,
             config_class=config_class,
             description=description,
         )

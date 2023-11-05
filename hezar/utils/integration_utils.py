@@ -7,6 +7,7 @@ from ..constants import Backends
 
 __all__ = [
     "is_backend_available",
+    "are_backends_available",
     "verify_dependencies",
     "get_lib_version",
 ]
@@ -23,6 +24,10 @@ def is_backend_available(backend: Backends):
         Whether the package is available or not
     """
     return importlib.util.find_spec(backend) is not None
+
+
+def are_backends_available(backends: List[Backends]):
+    return all([is_backend_available(backend) for backend in backends])
 
 
 def verify_dependencies(obj, backends: List[Union[Backends, str]] = None):

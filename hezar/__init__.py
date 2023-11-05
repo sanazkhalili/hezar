@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING
 
 from .dummy_objects.framework import _LazyModule  # noqa
 from .dummy_objects import *
-from .utils.integration_utils import is_backend_available
+from .utils.integration_utils import are_backends_available
 from .constants import Backends, DUMMY_PATH
 
 __version__ = "0.31.3"
@@ -18,18 +18,18 @@ _import_structure = {
     DUMMY_PATH: []
 }
 
-if is_backend_available(Backends.TORCH) and is_backend_available(Backends.TOKENIZERS):
+if are_backends_available([Backends.TORCH, Backends.TOKENIZERS]):
     _import_structure['preprocessors.tokenizers.tokenizer'] = ["Tokenizer", 'TokenizerConfig']
     _import_structure['preprocessors.tokenizers.wordpiece'] = ['WordPieceConfig', 'WordPieceTokenizer']
 else:
     _import_structure[DUMMY_PATH].extend(["Tokenizer", 'TokenizerConfig', 'WordPieceConfig', 'WordPieceTokenizer'])
 
-if is_backend_available(Backends.TORCH):
+if are_backends_available([Backends.TORCH]):
     _import_structure["models.model"] = ["Model"]
 else:
     _import_structure[DUMMY_PATH].extend(["Model"])
 
-if is_backend_available(Backends.TORCH) and is_backend_available(Backends.TRANSFORMERS):
+if are_backends_available([Backends.TORCH, Backends.TRANSFORMERS]):
     _import_structure["models.text_classification.distilbert.distilbert_text_classification"] = [
         "DistilBertTextClassification"]
 else:

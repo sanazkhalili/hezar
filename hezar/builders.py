@@ -19,7 +19,7 @@ from .configs import (
     ModelConfig,
     PreprocessorConfig,
 )
-from .constants import SplitType
+from .constants import RegistryType, SplitType
 from .registry import (
     datasets_registry,
     embeddings_registry,
@@ -28,7 +28,8 @@ from .registry import (
     preprocessors_registry,
 )
 from .utils.common_utils import snake_case
-from .utils.registry_utils import lazy_import_module_cls
+from .utils.registry_utils import lazy_import_module
+
 
 __all__ = [
     "build_model",
@@ -55,9 +56,8 @@ def build_model(name: str, config: Optional[ModelConfig] = None, **kwargs):
     """
     if name not in models_registry:
         raise ValueError(f"Unknown model name: `{name}`!\n" f"Available model names: {list(models_registry.keys())}")
-    config = config or models_registry[name].config_class()
-    klass = lazy_import_module_cls(models_registry, name)
-    model = klass(config, **kwargs)
+    module_class = lazy_import_module(name, registry_type=RegistryType.MODEL)
+    model = module_class(config, **kwargs)
     return model
 
 
@@ -80,8 +80,8 @@ def build_preprocessor(name: str, config: Optional[PreprocessorConfig] = None, *
             f"Available preprocessor names: {list(preprocessors_registry.keys())}"
         )
     config = config or preprocessors_registry[name].config_class()
-    klass = lazy_import_module_cls(preprocessors_registry, name)
-    preprocessor = klass(config, **kwargs)
+    module_class = lazy_import_module(name, registry_type=RegistryType.PREPROCESSOR)
+    preprocessor = module_class(config, **kwargs)
     return preprocessor
 
 
@@ -104,7 +104,8 @@ def build_dataset(name: str, config: Optional[DatasetConfig] = None, split: Spli
             f"Unknown dataset name: `{name}`!\n" f"Available dataset names: {list(datasets_registry.keys())}"
         )
     config = config or datasets_registry[name].config_class()
-    dataset = datasets_registry[name].module_class(config, split, **kwargs)
+    module_class = lazy_import_module(name, registry_type=RegistryType.DATASET)
+    dataset = module_class(config, **kwargs)
     return dataset
 
 
@@ -126,7 +127,8 @@ def build_embedding(name: str, config: Optional[EmbeddingConfig] = None, **kwarg
             f"Unknown embedding name: `{name}`!\n" f"Available embedding names: {list(embeddings_registry.keys())}"
         )
     config = config or embeddings_registry[name].config_class()
-    embedding = embeddings_registry[name].module_class(config, **kwargs)
+    module_class = lazy_import_module(name, registry_type=RegistryType.EMBEDDING)
+    embedding = module_class(config, **kwargs)
     return embedding
 
 
@@ -147,5 +149,6 @@ def build_metric(name: str, config: Optional[MetricConfig] = None, **kwargs):
         raise ValueError(f"Unknown metric name: `{name}`!\n" f"Available metric names: {list(metrics_registry.keys())}")
     name = snake_case(name)
     config = config or metrics_registry[name].config_class()
-    metric = metrics_registry[name].module_class(config, **kwargs)
+    module_class = lazy_import_module(name, registry_type=RegistryType.METRIC)
+    metric = module_class(config, **kwargs)
     return metric
