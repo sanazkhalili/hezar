@@ -8,7 +8,7 @@ from omegaconf import OmegaConf
 from ..constants import DEFAULT_PREPROCESSOR_SUBFOLDER, Backends, RegistryType, RepoType
 from ..utils.hub_utils import list_repo_files
 from ..utils.integration_utils import verify_dependencies
-from ..utils.registry_utils import get_module_class
+from ..utils.registry_utils import lazy_import_module
 
 
 class Preprocessor:
@@ -42,22 +42,22 @@ class Preprocessor:
         raise NotImplementedError
 
     def push_to_hub(
-        self,
-        repo_id,
-        subfolder=None,
-        commit_message=None,
-        private=None,
-        **kwargs,
+            self,
+            repo_id,
+            subfolder=None,
+            commit_message=None,
+            private=None,
+            **kwargs,
     ):
         raise NotImplementedError
 
     @classmethod
     def load(
-        cls,
-        hub_or_local_path,
-        subfolder: str = None,
-        force_return_dict: bool = False,
-        **kwargs
+            cls,
+            hub_or_local_path,
+            subfolder: str = None,
+            force_return_dict: bool = False,
+            **kwargs
     ):
         """
         Load a preprocessor or a pipeline of preprocessors from a local or Hub path. This method automatically detects
@@ -93,7 +93,7 @@ class Preprocessor:
                 config = OmegaConf.load(config_file)
                 name = config.get("name", None)
                 if name:
-                    preprocessor_cls = get_module_class(name, registry_type=RegistryType.PREPROCESSOR)
+                    preprocessor_cls = lazy_import_module(name, registry_type=RegistryType.PREPROCESSOR)
                     preprocessor = preprocessor_cls.load(hub_or_local_path, subfolder=subfolder)
                     preprocessors[name] = preprocessor
                 else:
@@ -130,11 +130,11 @@ class PreprocessorsContainer(OrderedDict):
             preprocessor.save(path)
 
     def push_to_hub(
-        self,
-        repo_id,
-        subfolder=None,
-        commit_message=None,
-        private=None,
+            self,
+            repo_id,
+            subfolder=None,
+            commit_message=None,
+            private=None,
     ):
         """
         Push every preprocessor item in the container
