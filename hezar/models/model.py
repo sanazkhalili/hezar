@@ -121,13 +121,13 @@ class Model(nn.Module):
         # Load config
         config_filename = config_filename or cls.config_filename
         config = ModelConfig.load(hub_or_local_path=hub_or_local_path, filename=config_filename)
-        # Get the exact model class based on registry name under config.name
-        model_cls = get_module_class(config.name, registry_type=RegistryType.MODEL)
         # Handle compatibility of model class and the one in the config
         if cls.__name__ == "Model":
             # Build model wih config
             model = build_model(config.name, config, **kwargs)
         else:
+            # Get the exact model class based on registry name under config.name
+            model_cls = get_module_class(config.name, registry_type=RegistryType.MODEL)
             if cls.__name__ != model_cls.__name__:
                 logger.warning(
                     f"You attempted to load a model using `{cls.__name__}` "

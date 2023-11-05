@@ -2,7 +2,6 @@ import importlib
 
 from ..constants import RegistryType
 
-
 __all__ = [
     "list_available_models",
     "list_available_preprocessors",
@@ -116,6 +115,26 @@ def get_module_config_class(name: str, registry_type: RegistryType):
     return config_cls
 
 
+def lazy_import_config(name: str, registry_type: RegistryType):
+    """
+    This function is used to Lazy load configs in build modules
+
+    Args:
+        name: Module's registry key
+        registry_type: Registry type
+
+    Returns:
+
+    """
+    module_class = get_module_config_class(name, registry_type)
+    if module_class is not None and isinstance(module_class, str):
+        # Import the module
+        module = importlib.import_module("hezar")
+        # Get the class
+        module_class = getattr(module, module_class)
+    return module_class
+
+
 def lazy_import_module(name: str, registry_type: RegistryType):
     """
     This function is used to Lazy load classes in build modules
@@ -128,7 +147,7 @@ def lazy_import_module(name: str, registry_type: RegistryType):
 
     """
     module_class = get_module_class(name, registry_type)
-    if not isinstance(module_class, type):
+    if isinstance(module_class, str):
         # Import the module
         module = importlib.import_module("hezar")
         # Get the class

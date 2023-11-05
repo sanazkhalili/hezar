@@ -36,7 +36,6 @@ from .configs import (
 )
 from .utils.logging import Logger
 
-
 __all__ = [
     "register_model",
     "register_preprocessor",
@@ -57,7 +56,7 @@ logger = Logger(__name__)
 @dataclass
 class Registry:
     module_class: Union[str, type]
-    config_class: type = None
+    config_class: Optional[type] = None
     description: Optional[str] = None
 
 
@@ -69,10 +68,10 @@ metrics_registry: Dict[str, Registry] = {}
 
 
 def register_model(
-    model_name: str,
-    config_class: Type[ModelConfig] = None,
-    description: str = None,
-    dummy: bool = False,
+        model_name: str,
+        config_class: Optional[Type[ModelConfig]] = None,
+        description: str = None,
+        dummy: bool = False,
 ):
     """
     A class decorator that adds the model class and the config class to the `models_registry`
@@ -89,7 +88,7 @@ def register_model(
         if model_name in models_registry:
             logger.warning(f"Model `{model_name}` is already registered. Overwriting...")
 
-        if config_class.name != model_name:
+        if config_class is not None and config_class.name != model_name:
             raise ValueError(
                 f"`model_name` and `config.name` are not compatible for `{cls.__name__}`\n"
                 f"model_name: {model_name}\n"
@@ -100,7 +99,7 @@ def register_model(
 
         models_registry[model_name] = Registry(
             module_class=module_class,
-            config_class=config_class,
+            config_class=module_class + "Config" if (dummy and config_class is None) else config_class,
             description=description,
         )
 
@@ -110,10 +109,10 @@ def register_model(
 
 
 def register_dataset(
-    dataset_name: str,
-    config_class: Type[DatasetConfig] = None,
-    description: str = None,
-    dummy: bool = False,
+        dataset_name: str,
+        config_class: Optional[Type[DatasetConfig]] = None,
+        description: str = None,
+        dummy: bool = False,
 ):
     """
     A class decorator that adds the dataset class and the config class to the `datasets_registry`
@@ -151,10 +150,10 @@ def register_dataset(
 
 
 def register_preprocessor(
-    preprocessor_name: str,
-    config_class: Type[PreprocessorConfig] = None,
-    description: str = None,
-    dummy: bool = False,
+        preprocessor_name: str,
+        config_class: Optional[Type[PreprocessorConfig]] = None,
+        description: str = None,
+        dummy: bool = False,
 ):
     """
     A class decorator that adds the preprocessor class and the config class to the `preprocessors_registry`
@@ -172,7 +171,7 @@ def register_preprocessor(
         if preprocessor_name in preprocessors_registry:
             logger.warning(f"Preprocessor `{preprocessor_name}` is already registered. Overwriting...")
 
-        if config_class.name != preprocessor_name:
+        if config_class is not None and config_class.name != preprocessor_name:
             raise ValueError(
                 f"`preprocessor_name` and `config.name` are not compatible for `{cls.__name__}`\n"
                 f"preprocessor_name: {preprocessor_name}\n"
@@ -193,10 +192,10 @@ def register_preprocessor(
 
 
 def register_embedding(
-    embedding_name: str,
-    config_class: Type[EmbeddingConfig],
-    description: str = None,
-    dummy: bool = False,
+        embedding_name: str,
+        config_class: Optional[Type[EmbeddingConfig]] = None,
+        description: str = None,
+        dummy: bool = False,
 ):
     """
     A class decorator that adds the embedding class and the config class to the `embeddings_registry`
@@ -234,10 +233,10 @@ def register_embedding(
 
 
 def register_metric(
-    metric_name: str,
-    config_class: Type[MetricConfig],
-    description: str = None,
-    dummy: bool = False,
+        metric_name: str,
+        config_class: Optional[Type[MetricConfig]] = None,
+        description: str = None,
+        dummy: bool = False,
 ):
     """
     A class decorator that adds the metric class and the config class to the `metrics_registry`

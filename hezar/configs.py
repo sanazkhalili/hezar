@@ -24,7 +24,7 @@ from omegaconf import DictConfig, OmegaConf
 
 from .constants import DEFAULT_MODEL_CONFIG_FILE, HEZAR_CACHE_DIR, ConfigType, TaskType
 from .utils.logging import Logger
-from .utils.registry_utils import get_module_config_class
+from .utils.registry_utils import get_module_config_class, lazy_import_config
 
 __all__ = [
     "Config",
@@ -186,7 +186,7 @@ class Config:
                     f"The `config_type` for `{cls.__name__}` is `{cls.config_type}` "
                     f"which is different from the `config_type` parameter in `{filename}` which is `{config_type}`!"
                 )
-        config_cls = get_module_config_class(config["name"], registry_type=config_type)
+        config_cls = lazy_import_config(config["name"], registry_type=config_type)
         if config_cls is None:
             config_cls = cls
         config = config_cls.from_dict(config, **kwargs)

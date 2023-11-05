@@ -11,11 +11,15 @@ from .constants import Backends, DUMMY_PATH
 
 __version__ = "0.31.3"
 
-
 # no third-party python libraries are required for the following classes
 _import_structure = {
     "utils.logging": ["Logger"],
-    DUMMY_PATH: []
+
+    # Configs with no lib requirement
+    "models.text_classification.distilbert.distilbert_text_classification_config": [
+        "DistilBertTextClassificationConfig"],
+
+    DUMMY_PATH: [],
 }
 
 if are_backends_available([Backends.TORCH, Backends.TOKENIZERS]):
@@ -38,8 +42,11 @@ else:
 if TYPE_CHECKING:
     from .models.model import Model
     from .models.text_classification.distilbert.distilbert_text_classification import DistilBertTextClassification
+    from .models.text_classification.distilbert.distilbert_text_classification_config import (
+        DistilBertTextClassificationConfig)
     from .preprocessors.tokenizers.tokenizer import Tokenizer, TokenizerConfig
-    from .preprocessors.tokenizers.wordpiece import WordPieceConfig, WordPieceTokenizer
+    from .preprocessors.tokenizers.wordpiece import WordPieceTokenizerConfig, WordPieceTokenizer
+
     from .utils.logging import Logger
 else:
     import sys
