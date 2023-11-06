@@ -18,19 +18,29 @@ _import_structure = {
     "models.text_classification.distilbert.distilbert_text_classification_config": [
         "DistilBertTextClassificationConfig"],
 
+    "models.image2text.crnn.crnn_image2text_config": ["CRNNImage2TextConfig"],
+
     DUMMY_PATH: [],
 }
 
 if are_backends_available([Backends.TORCH, Backends.TOKENIZERS]):
     _import_structure['preprocessors.tokenizers.tokenizer'] = ["Tokenizer", 'TokenizerConfig']
-    _import_structure['preprocessors.tokenizers.wordpiece'] = ['WordPieceConfig', 'WordPieceTokenizer']
+    _import_structure['preprocessors.tokenizers.wordpiece'] = ['WordPieceTokenizerConfig', 'WordPieceTokenizer']
 else:
-    _import_structure[DUMMY_PATH].extend(["Tokenizer", 'TokenizerConfig', 'WordPieceConfig', 'WordPieceTokenizer'])
+    _import_structure[DUMMY_PATH].extend(["Tokenizer", 'TokenizerConfig',
+                                          'WordPieceTokenizerConfig', 'WordPieceTokenizer'])
+
+if are_backends_available([Backends.TORCH, Backends.PILLOW]):
+    _import_structure["preprocessors.image_processor"] = ["ImageProcessor", "ImageProcessorConfig"]
+else:
+    _import_structure[DUMMY_PATH].extend(["ImageProcessor", 'ImageProcessorConfig'])
 
 if are_backends_available([Backends.TORCH]):
     _import_structure["models.model"] = ["Model"]
+    _import_structure["models.image2text.crnn.crnn_image2text"] = ["CRNNImage2Text"]
 else:
     _import_structure[DUMMY_PATH].extend(["Model"])
+    _import_structure[DUMMY_PATH].extend(["CRNNImage2Text"])
 
 if are_backends_available([Backends.TORCH, Backends.TRANSFORMERS]):
     _import_structure["models.text_classification.distilbert.distilbert_text_classification"] = [
@@ -43,9 +53,11 @@ if TYPE_CHECKING:
     from .models.text_classification.distilbert.distilbert_text_classification import DistilBertTextClassification
     from .models.text_classification.distilbert.distilbert_text_classification_config import (
         DistilBertTextClassificationConfig)
+    from .models.image2text.crnn.crnn_image2text import CRNNImage2Text
+    from .models.image2text.crnn.crnn_image2text_config import CRNNImage2TextConfig
     from .preprocessors.tokenizers.tokenizer import Tokenizer, TokenizerConfig
     from .preprocessors.tokenizers.wordpiece import WordPieceTokenizerConfig, WordPieceTokenizer
-
+    from .preprocessors.image_processor import ImageProcessor, ImageProcessorConfig
     from .utils import Logger
 else:
     import sys

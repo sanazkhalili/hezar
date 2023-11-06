@@ -22,3 +22,15 @@ class DistilBertTextClassification(metaclass=DummyObject):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+
+
+@register_model(
+    model_name="crnn_image2text",
+    config_class="CRNNImage2TextConfig",
+    dummy=True,
+)
+class CRNNImage2Text(metaclass=DummyObject):
+    _required_backends = [Backends.TORCH]
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
