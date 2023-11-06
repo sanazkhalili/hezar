@@ -222,6 +222,7 @@ def register_embedding(
             module_class=cls,
             config_class=config_class,
             description=description,
+            dummy=dummy,
         )
 
         return cls
@@ -259,6 +260,7 @@ def register_metric(
             module_class=cls,
             config_class=config_class,
             description=description,
+            dummy=dummy,
         )
 
         return cls
