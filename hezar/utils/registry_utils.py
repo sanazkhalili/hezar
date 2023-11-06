@@ -2,6 +2,7 @@ import importlib
 
 from ..constants import RegistryType
 
+
 __all__ = [
     "list_available_models",
     "list_available_preprocessors",
@@ -12,7 +13,8 @@ __all__ = [
     "get_module_class",
     "get_module_config_class",
     "get_registry_key_by_module_class",
-    "lazy_import_module"
+    "lazy_import_module",
+    "lazy_import_config",
 ]
 
 
@@ -146,12 +148,13 @@ def lazy_import_module(name: str, registry_type: RegistryType):
     Returns:
 
     """
+    registry = _get_registry_from_type(registry_type)
     module_class = get_module_class(name, registry_type)
-    if isinstance(module_class, str):
+    if registry[name].dummy:
         # Import the module
         module = importlib.import_module("hezar")
         # Get the class
-        module_class = getattr(module, module_class)
+        module_class = getattr(module, module_class.__name__)
     return module_class
 
 

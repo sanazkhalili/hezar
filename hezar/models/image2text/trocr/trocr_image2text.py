@@ -5,10 +5,11 @@ import torch
 
 from ....constants import Backends
 from ....registry import register_model
+from ....utils import is_backend_available
 from ...model import Model
 from ...model_outputs import Image2TextOutput
 from .trocr_image2text_config import TrOCRImage2TextConfig
-from ....utils.integration_utils import is_backend_available
+
 
 if is_backend_available(Backends.TRANSFORMERS):
     from transformers import (

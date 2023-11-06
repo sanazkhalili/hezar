@@ -2,7 +2,7 @@ from typing import Dict, List, Union
 
 from ..configs import MetricConfig
 from ..constants import Backends
-from ..utils.integration_utils import verify_dependencies
+from ..utils import verify_dependencies
 
 
 class Metric:

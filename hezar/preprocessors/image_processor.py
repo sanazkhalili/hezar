@@ -12,8 +12,8 @@ from ..constants import (
     ImageType,
 )
 from ..registry import register_preprocessor
-from ..utils.data_utils import convert_batch_dict_dtype
-from ..utils.image_utils import (
+from ..utils import (
+    convert_batch_dict_dtype,
     convert_image_type,
     gray_scale_image,
     load_image,

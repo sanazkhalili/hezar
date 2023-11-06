@@ -28,9 +28,7 @@ from ..constants import (
     RegistryType,
 )
 from ..preprocessors.preprocessor import Preprocessor, PreprocessorsContainer
-from ..utils.integration_utils import verify_dependencies
-from ..utils.logging import Logger
-from ..utils.registry_utils import get_module_class
+from ..utils import Logger, get_module_class, verify_dependencies
 from .model_outputs import ModelOutput
 
 

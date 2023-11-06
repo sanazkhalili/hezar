@@ -23,8 +23,8 @@ from huggingface_hub import create_repo, hf_hub_download, upload_file
 from omegaconf import DictConfig, OmegaConf
 
 from .constants import DEFAULT_MODEL_CONFIG_FILE, HEZAR_CACHE_DIR, ConfigType, TaskType
-from .utils.logging import Logger
-from .utils.registry_utils import get_module_config_class, lazy_import_config
+from .utils import Logger, get_module_config_class, lazy_import_config
+
 
 __all__ = [
     "Config",

@@ -4,9 +4,8 @@ from .configs import *
 
 from typing import TYPE_CHECKING
 
-from .utils.dummy_objects.framework import _LazyModule  # noqa
+from .utils import are_backends_available, LazyModule
 from .utils.dummy_objects import *
-from .utils.integration_utils import are_backends_available
 from .constants import Backends, DUMMY_PATH
 
 __version__ = "0.31.3"
@@ -47,11 +46,11 @@ if TYPE_CHECKING:
     from .preprocessors.tokenizers.tokenizer import Tokenizer, TokenizerConfig
     from .preprocessors.tokenizers.wordpiece import WordPieceTokenizerConfig, WordPieceTokenizer
 
-    from .utils.logging import Logger
+    from .utils import Logger
 else:
     import sys
 
-    sys.modules[__name__] = _LazyModule(
+    sys.modules[__name__] = LazyModule(
         __name__,
         globals()["__file__"],
         _import_structure,

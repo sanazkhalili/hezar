@@ -3,7 +3,7 @@ import os.path
 from huggingface_hub import HfApi, Repository
 
 from ..constants import HEZAR_CACHE_DIR, HEZAR_HUB_ID, RepoType
-from ..utils.logging import Logger
+from ..utils import Logger
 
 
 __all__ = [

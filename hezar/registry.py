@@ -34,7 +34,8 @@ from .configs import (
     ModelConfig,
     PreprocessorConfig,
 )
-from .utils.logging import Logger
+from .utils import Logger
+
 
 __all__ = [
     "register_model",
@@ -56,8 +57,9 @@ logger = Logger(__name__)
 @dataclass
 class Registry:
     module_class: Union[str, type]
-    config_class: Optional[type] = None
+    config_class: Optional[Union[str, type]] = None
     description: Optional[str] = None
+    dummy: bool = False
 
 
 models_registry: Dict[str, Registry] = {}
@@ -68,10 +70,10 @@ metrics_registry: Dict[str, Registry] = {}
 
 
 def register_model(
-        model_name: str,
-        config_class: Optional[Type[ModelConfig]] = None,
-        description: str = None,
-        dummy: bool = False,
+    model_name: str,
+    config_class: Optional[Union[Type[ModelConfig], str]] = None,
+    description: str = None,
+    dummy: bool = False,
 ):
     """
     A class decorator that adds the model class and the config class to the `models_registry`
@@ -85,22 +87,21 @@ def register_model(
     """
 
     def register(cls):
-        if model_name in models_registry:
+        if model_name in models_registry and not models_registry[model_name].dummy and not dummy:
             logger.warning(f"Model `{model_name}` is already registered. Overwriting...")
 
-        if config_class is not None and config_class.name != model_name:
+        if config_class is not None and not isinstance(config_class, str) and config_class.name != model_name:
             raise ValueError(
                 f"`model_name` and `config.name` are not compatible for `{cls.__name__}`\n"
                 f"model_name: {model_name}\n"
                 f"{config_class.__name__}.name: {config_class.name}"
             )
 
-        module_class = cls.__name__ if dummy else cls
-
         models_registry[model_name] = Registry(
-            module_class=module_class,
-            config_class=module_class + "Config" if (dummy and config_class is None) else config_class,
+            module_class=cls,
+            config_class=config_class,
             description=description,
+            dummy=dummy,
         )
 
         return cls
@@ -109,10 +110,10 @@ def register_model(
 
 
 def register_dataset(
-        dataset_name: str,
-        config_class: Optional[Type[DatasetConfig]] = None,
-        description: str = None,
-        dummy: bool = False,
+    dataset_name: str,
+    config_class: Optional[Type[DatasetConfig]] = None,
+    description: str = None,
+    dummy: bool = False,
 ):
     """
     A class decorator that adds the dataset class and the config class to the `datasets_registry`
@@ -136,12 +137,11 @@ def register_dataset(
                 f"{config_class.__name__}.name: {config_class.name}"
             )
 
-        module_class = cls.__name__ if dummy else cls
-
         datasets_registry[dataset_name] = Registry(
-            module_class=module_class,
+            module_class=cls,
             config_class=config_class,
             description=description,
+            dummy=dummy,
         )
 
         return cls
@@ -150,10 +150,10 @@ def register_dataset(
 
 
 def register_preprocessor(
-        preprocessor_name: str,
-        config_class: Optional[Type[PreprocessorConfig]] = None,
-        description: str = None,
-        dummy: bool = False,
+    preprocessor_name: str,
+    config_class: Optional[Union[str, Type[PreprocessorConfig]]] = None,
+    description: str = None,
+    dummy: bool = False,
 ):
     """
     A class decorator that adds the preprocessor class and the config class to the `preprocessors_registry`
@@ -168,22 +168,21 @@ def register_preprocessor(
     """
 
     def register(cls):
-        if preprocessor_name in preprocessors_registry:
+        if preprocessor_name in preprocessors_registry and not preprocessors_registry[preprocessor_name] and not dummy:
             logger.warning(f"Preprocessor `{preprocessor_name}` is already registered. Overwriting...")
 
-        if config_class is not None and config_class.name != preprocessor_name:
+        if config_class is not None and not isinstance(config_class, str) and config_class.name != preprocessor_name:
             raise ValueError(
                 f"`preprocessor_name` and `config.name` are not compatible for `{cls.__name__}`\n"
                 f"preprocessor_name: {preprocessor_name}\n"
                 f"{config_class.__name__}.name: {config_class.name}"
             )
 
-        module_class = cls.__name__ if dummy else cls
-
         preprocessors_registry[preprocessor_name] = Registry(
-            module_class=module_class,
+            module_class=cls,
             config_class=config_class,
             description=description,
+            dummy=dummy,
         )
 
         return cls
@@ -192,10 +191,10 @@ def register_preprocessor(
 
 
 def register_embedding(
-        embedding_name: str,
-        config_class: Optional[Type[EmbeddingConfig]] = None,
-        description: str = None,
-        dummy: bool = False,
+    embedding_name: str,
+    config_class: Optional[Type[EmbeddingConfig]] = None,
+    description: str = None,
+    dummy: bool = False,
 ):
     """
     A class decorator that adds the embedding class and the config class to the `embeddings_registry`
@@ -219,10 +218,8 @@ def register_embedding(
                 f"{config_class.__name__}.name: {config_class.name}"
             )
 
-        module_class = cls.__name__ if dummy else cls
-
         embeddings_registry[embedding_name] = Registry(
-            module_class=module_class,
+            module_class=cls,
             config_class=config_class,
             description=description,
         )
@@ -233,10 +230,10 @@ def register_embedding(
 
 
 def register_metric(
-        metric_name: str,
-        config_class: Optional[Type[MetricConfig]] = None,
-        description: str = None,
-        dummy: bool = False,
+    metric_name: str,
+    config_class: Optional[Type[MetricConfig]] = None,
+    description: str = None,
+    dummy: bool = False,
 ):
     """
     A class decorator that adds the metric class and the config class to the `metrics_registry`
@@ -258,10 +255,8 @@ def register_metric(
                 f"{config_class.__name__}.name: {config_class.name}"
             )
 
-        module_class = cls.__name__ if dummy else cls
-
         metrics_registry[metric_name] = Registry(
-            module_class=module_class,
+            module_class=cls,
             config_class=config_class,
             description=description,
         )

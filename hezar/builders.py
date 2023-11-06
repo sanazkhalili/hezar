@@ -27,8 +27,7 @@ from .registry import (
     models_registry,
     preprocessors_registry,
 )
-from .utils.common_utils import snake_case
-from .utils.registry_utils import lazy_import_module
+from .utils import lazy_import_module, snake_case
 
 
 __all__ = [

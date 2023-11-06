@@ -3,10 +3,9 @@ from typing import List
 
 from tokenizers import trainers
 
-from .tokenizer import Tokenizer
-from .tokenizer import TokenizerConfig
 from ...constants import DEFAULT_TOKENIZER_CONFIG_FILE, DEFAULT_TOKENIZER_FILE
 from ...registry import register_preprocessor
+from .tokenizer import Tokenizer, TokenizerConfig
 
 
 @dataclass
