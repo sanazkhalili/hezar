@@ -2,29 +2,20 @@ from typing import List, Union
 
 import numpy as np
 import torch
+from PIL import Image
+from transformers import (
+    GenerationConfig,
+    GPT2Config,
+    GPT2LMHeadModel,
+    VisionEncoderDecoderModel,
+    ViTConfig,
+    ViTModel,
+)
 
-from ....constants import Backends
-from ....registry import register_model
-from ....utils import is_backend_available
+from .vit_gpt2_image2text_config import ViTGPT2Image2TextConfig
 from ...model import Model
 from ...model_outputs import Image2TextOutput
-from .vit_gpt2_image2text_config import ViTGPT2Image2TextConfig
-
-
-if is_backend_available(Backends.TRANSFORMERS):
-    from transformers import (
-        GenerationConfig,
-        GPT2Config,
-        GPT2LMHeadModel,
-        VisionEncoderDecoderModel,
-        ViTConfig,
-        ViTModel,
-    )
-
-if is_backend_available(Backends.PILLOW):
-    from PIL import Image
-
-_required_backends = [Backends.TRANSFORMERS, Backends.TOKENIZERS, Backends.PILLOW]
+from ....registry import register_model
 
 
 @register_model("vit_gpt2_image2text", config_class=ViTGPT2Image2TextConfig)
@@ -34,7 +25,6 @@ class ViTGPT2Image2Text(Model):
     """
 
     is_generative = True
-    required_backends = _required_backends
     image_processor = "image_processor"
     tokenizer_name = "bpe_tokenizer"
     loss_fn_name = "cross_entropy"

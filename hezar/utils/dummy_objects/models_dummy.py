@@ -34,3 +34,15 @@ class CRNNImage2Text(metaclass=DummyObject):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+
+
+@register_model(
+    model_name="vit_gpt2_image2text",
+    config_class="ViTGPT2Image2TextConfig",
+    dummy=True,
+)
+class ViTGPT2Image2Text(metaclass=DummyObject):
+    _required_backends = [Backends.TORCH, Backends.PILLOW, Backends.TRANSFORMERS]
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)

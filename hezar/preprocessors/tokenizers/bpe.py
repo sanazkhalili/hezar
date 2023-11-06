@@ -1,23 +1,16 @@
 from dataclasses import dataclass, field
 from typing import List
 
-from ...constants import DEFAULT_TOKENIZER_CONFIG_FILE, DEFAULT_TOKENIZER_FILE, Backends
-from ...registry import register_preprocessor
-from ...utils import is_backend_available
+from tokenizers import Tokenizer as HFTokenizer
+from tokenizers import decoders, models, pre_tokenizers, processors, trainers
+
 from .tokenizer import Tokenizer, TokenizerConfig
-
-
-if is_backend_available(Backends.TOKENIZERS):
-    from tokenizers import Tokenizer as HFTokenizer
-    from tokenizers import decoders, models, pre_tokenizers, processors, trainers
-
-_required_backends = [
-    Backends.TOKENIZERS,
-]
+from ...constants import DEFAULT_TOKENIZER_CONFIG_FILE, DEFAULT_TOKENIZER_FILE
+from ...registry import register_preprocessor
 
 
 @dataclass
-class BPEConfig(TokenizerConfig):
+class BPETokenizerConfig(TokenizerConfig):
     name = "bpe_tokenizer"
     max_length: int = 512
     truncation_strategy: str = "longest_first"
@@ -45,7 +38,7 @@ class BPEConfig(TokenizerConfig):
     show_progress: bool = True
 
 
-@register_preprocessor("bpe_tokenizer", config_class=BPEConfig)
+@register_preprocessor("bpe_tokenizer", config_class=BPETokenizerConfig)
 class BPETokenizer(Tokenizer):
     """
     A standard Byte-level BPE tokenizer using 🤗HuggingFace Tokenizers
@@ -54,8 +47,6 @@ class BPETokenizer(Tokenizer):
         config: Preprocessor config for the tokenizer
         **kwargs: Extra/manual config parameters
     """
-
-    required_backends = _required_backends
 
     tokenizer_filename = DEFAULT_TOKENIZER_FILE
     tokenizer_config_filename = DEFAULT_TOKENIZER_CONFIG_FILE

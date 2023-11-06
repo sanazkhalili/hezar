@@ -13,6 +13,17 @@ class Tokenizer(metaclass=DummyObject):
 TokenizerConfig = Tokenizer
 
 
+@register_preprocessor("bpe_tokenizer", config_class="BPETokenizerConfig", dummy=True)
+class BPETokenizer(metaclass=DummyObject):
+    _required_backends = [Backends.TOKENIZERS, Backends.TORCH]
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+
+BPETokenizerConfig = BPETokenizer
+
+
 @register_preprocessor("wordpiece_tokenizer", config_class="WordPieceTokenizerConfig", dummy=True)
 class WordPieceTokenizer(metaclass=DummyObject):
     _required_backends = [Backends.TOKENIZERS, Backends.TORCH]

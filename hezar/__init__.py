@@ -19,16 +19,24 @@ _import_structure = {
         "DistilBertTextClassificationConfig"],
 
     "models.image2text.crnn.crnn_image2text_config": ["CRNNImage2TextConfig"],
+    "models.image2text.vit_gpt2.vit_gpt2_image2text_config": ["ViTGPT2Image2TextConfig"],
 
     DUMMY_PATH: [],
 }
 
+if are_backends_available([Backends.TORCH, Backends.TRANSFORMERS, Backends.PILLOW]):
+    _import_structure["models.image2text.vit_gpt2.vit_gpt2_image2text"] = ["ViTGPT2Image2Text"]
+else:
+    _import_structure[DUMMY_PATH].extend(["ViTGPT2Image2Text"])
+
 if are_backends_available([Backends.TORCH, Backends.TOKENIZERS]):
     _import_structure['preprocessors.tokenizers.tokenizer'] = ["Tokenizer", 'TokenizerConfig']
     _import_structure['preprocessors.tokenizers.wordpiece'] = ['WordPieceTokenizerConfig', 'WordPieceTokenizer']
+    _import_structure['preprocessors.tokenizers.bpe'] = ['BPETokenizerConfig', 'BPETokenizer']
 else:
     _import_structure[DUMMY_PATH].extend(["Tokenizer", 'TokenizerConfig',
-                                          'WordPieceTokenizerConfig', 'WordPieceTokenizer'])
+                                          'WordPieceTokenizerConfig', 'WordPieceTokenizer',
+                                          'BPETokenizerConfig', 'BPETokenizer'])
 
 if are_backends_available([Backends.TORCH, Backends.PILLOW]):
     _import_structure["preprocessors.image_processor"] = ["ImageProcessor", "ImageProcessorConfig"]
@@ -55,9 +63,13 @@ if TYPE_CHECKING:
         DistilBertTextClassificationConfig)
     from .models.image2text.crnn.crnn_image2text import CRNNImage2Text
     from .models.image2text.crnn.crnn_image2text_config import CRNNImage2TextConfig
+    from .models.image2text.vit_gpt2.vit_gpt2_image2text import ViTGPT2Image2Text
+    from .models.image2text.vit_gpt2.vit_gpt2_image2text_config import ViTGPT2Image2TextConfig
     from .preprocessors.tokenizers.tokenizer import Tokenizer, TokenizerConfig
     from .preprocessors.tokenizers.wordpiece import WordPieceTokenizerConfig, WordPieceTokenizer
     from .preprocessors.image_processor import ImageProcessor, ImageProcessorConfig
+    from .preprocessors.tokenizers.bpe import BPETokenizer, BPETokenizerConfig
+
     from .utils import Logger
 else:
     import sys
