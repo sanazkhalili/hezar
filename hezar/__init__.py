@@ -21,40 +21,40 @@ _import_structure = {
     "models.image2text.crnn.crnn_image2text_config": ["CRNNImage2TextConfig"],
     "models.image2text.vit_gpt2.vit_gpt2_image2text_config": ["ViTGPT2Image2TextConfig"],
 
-    DUMMY_PATH: [],
+    # DUMMY_PATH: [],
 }
 
 if are_backends_available([Backends.TORCH, Backends.TRANSFORMERS, Backends.PILLOW]):
     _import_structure["models.image2text.vit_gpt2.vit_gpt2_image2text"] = ["ViTGPT2Image2Text"]
-else:
-    _import_structure[DUMMY_PATH].extend(["ViTGPT2Image2Text"])
+# else:
+#     _import_structure[DUMMY_PATH].extend(["ViTGPT2Image2Text"])
 
 if are_backends_available([Backends.TORCH, Backends.TOKENIZERS]):
     _import_structure['preprocessors.tokenizers.tokenizer'] = ["Tokenizer", 'TokenizerConfig']
     _import_structure['preprocessors.tokenizers.wordpiece'] = ['WordPieceTokenizerConfig', 'WordPieceTokenizer']
     _import_structure['preprocessors.tokenizers.bpe'] = ['BPETokenizerConfig', 'BPETokenizer']
-else:
-    _import_structure[DUMMY_PATH].extend(["Tokenizer", 'TokenizerConfig',
-                                          'WordPieceTokenizerConfig', 'WordPieceTokenizer',
-                                          'BPETokenizerConfig', 'BPETokenizer'])
+# else:
+#     _import_structure[DUMMY_PATH].extend(["Tokenizer", 'TokenizerConfig',
+#                                           'WordPieceTokenizerConfig', 'WordPieceTokenizer',
+#                                           'BPETokenizerConfig', 'BPETokenizer'])
 
 if are_backends_available([Backends.TORCH, Backends.PILLOW]):
     _import_structure["preprocessors.image_processor"] = ["ImageProcessor", "ImageProcessorConfig"]
-else:
-    _import_structure[DUMMY_PATH].extend(["ImageProcessor", 'ImageProcessorConfig'])
+# else:
+#     _import_structure[DUMMY_PATH].extend(["ImageProcessor", 'ImageProcessorConfig'])
 
 if are_backends_available([Backends.TORCH]):
     _import_structure["models.model"] = ["Model"]
     _import_structure["models.image2text.crnn.crnn_image2text"] = ["CRNNImage2Text"]
-else:
-    _import_structure[DUMMY_PATH].extend(["Model"])
-    _import_structure[DUMMY_PATH].extend(["CRNNImage2Text"])
+# else:
+#     _import_structure[DUMMY_PATH].extend(["Model"])
+#     _import_structure[DUMMY_PATH].extend(["CRNNImage2Text"])
 
 if are_backends_available([Backends.TORCH, Backends.TRANSFORMERS]):
     _import_structure["models.text_classification.distilbert.distilbert_text_classification"] = [
         "DistilBertTextClassification"]
-else:
-    _import_structure[DUMMY_PATH].extend(["DistilBertTextClassification"])
+# else:
+#     _import_structure[DUMMY_PATH].extend(["DistilBertTextClassification"])
 
 if TYPE_CHECKING:
     from .models.model import Model
