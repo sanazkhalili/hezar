@@ -1,0 +1,10 @@
+hezar.models.text\_detection package
+====================================
+
+Module contents
+---------------
+
+.. automodule:: hezar.models.text_detection
+   :members:
+   :undoc-members:
+   :show-inheritance:

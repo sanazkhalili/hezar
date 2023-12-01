@@ -1,0 +1,7 @@
+hezar.models.language\_modeling.bert.bert\_lm module
+====================================================
+
+.. automodule:: hezar.models.language_modeling.bert.bert_lm
+   :members:
+   :undoc-members:
+   :show-inheritance:

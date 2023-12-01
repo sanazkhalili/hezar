@@ -1,0 +1,19 @@
+hezar.models.language\_modeling.distilbert package
+==================================================
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   hezar.models.language_modeling.distilbert.distilbert_lm
+   hezar.models.language_modeling.distilbert.distilbert_lm_config
+
+Module contents
+---------------
+
+.. automodule:: hezar.models.language_modeling.distilbert
+   :members:
+   :undoc-members:
+   :show-inheritance:

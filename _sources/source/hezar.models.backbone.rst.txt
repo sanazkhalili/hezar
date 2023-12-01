@@ -1,0 +1,20 @@
+hezar.models.backbone package
+=============================
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   hezar.models.backbone.bert
+   hezar.models.backbone.distilbert
+   hezar.models.backbone.roberta
+
+Module contents
+---------------
+
+.. automodule:: hezar.models.backbone
+   :members:
+   :undoc-members:
+   :show-inheritance:

@@ -1,0 +1,7 @@
+hezar.models.language\_modeling.distilbert.distilbert\_lm\_config module
+========================================================================
+
+.. automodule:: hezar.models.language_modeling.distilbert.distilbert_lm_config
+   :members:
+   :undoc-members:
+   :show-inheritance:

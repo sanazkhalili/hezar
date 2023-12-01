@@ -1,0 +1,19 @@
+hezar.models.language\_modeling.roberta package
+===============================================
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   hezar.models.language_modeling.roberta.roberta_lm
+   hezar.models.language_modeling.roberta.roberta_lm_config
+
+Module contents
+---------------
+
+.. automodule:: hezar.models.language_modeling.roberta
+   :members:
+   :undoc-members:
+   :show-inheritance:
